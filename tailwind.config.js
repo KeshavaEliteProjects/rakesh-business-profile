@@ -2,6 +2,16 @@
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
+    // Declared in full (not via `extend`) so `xs` sorts before `sm` in the
+    // output. An extended screen is emitted after 2xl and would beat `sm`.
+    screens: {
+      xs: '400px',
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
+      '2xl': '1536px',
+    },
     extend: {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],

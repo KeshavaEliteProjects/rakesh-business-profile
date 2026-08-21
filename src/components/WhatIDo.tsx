@@ -86,30 +86,30 @@ const services = [
 
 export default function WhatIDo() {
   return (
-    <section id="what-i-do" className="relative py-24 lg:py-32 overflow-hidden">
+    <section id="what-i-do" className="relative py-16 sm:py-20 lg:py-32 overflow-hidden">
       <div className="absolute inset-0 bg-navy-900/60" />
       <div className="absolute inset-0 bg-grid-pattern bg-[size:40px_40px] opacity-30" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-cyan-500/3 rounded-full blur-[100px]" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 reveal">
+        <div className="text-center mb-10 sm:mb-14 lg:mb-16 reveal">
           <span className="inline-block text-cyan-400 text-xs font-semibold tracking-widest uppercase mb-3">
             Expertise
           </span>
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+          <h2 className="font-display text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4">
             What I <span className="text-gradient">Do</span>
           </h2>
-          <p className="text-slate-400 max-w-2xl mx-auto text-base">
+          <p className="text-slate-400 max-w-2xl mx-auto text-sm sm:text-base">
             From building autonomous robots to designing AI systems and educating the next generation of engineers — here's where I create real impact.
           </p>
           <div className="section-divider w-24 mx-auto mt-6" />
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 stagger-children">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 stagger-children">
           {services.map((s) => (
             <div
               key={s.title}
-              className={`glass-card rounded-2xl p-6 bg-gradient-to-br ${s.color} border ${s.border} group cursor-default`}
+              className={`glass-card rounded-2xl p-5 sm:p-6 bg-gradient-to-br ${s.color} border ${s.border} group cursor-default`}
             >
               <div className={`w-11 h-11 rounded-xl ${s.iconBg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                 <s.icon className={`w-5 h-5 ${s.iconColor}`} />

@@ -53,25 +53,25 @@ const impacts = [
 
 export default function CommunityImpact() {
   return (
-    <section id="community" className="relative py-24 lg:py-32 overflow-hidden">
+    <section id="community" className="relative py-16 sm:py-20 lg:py-32 overflow-hidden">
       <div className="absolute inset-0 bg-navy-950" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-cyan-500/3 rounded-full blur-[120px]" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(500px,120vw)] h-[min(500px,120vw)] bg-cyan-500/3 rounded-full blur-[120px]" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 reveal">
+        <div className="text-center mb-10 sm:mb-14 lg:mb-16 reveal">
           <span className="inline-block text-cyan-400 text-xs font-semibold tracking-widest uppercase mb-3">
             Purpose
           </span>
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+          <h2 className="font-display text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4">
             Community <span className="text-gradient">Impact</span>
           </h2>
-          <p className="text-slate-400 max-w-2xl mx-auto text-base">
+          <p className="text-slate-400 max-w-2xl mx-auto text-sm sm:text-base">
             Technology is most powerful when it creates lasting positive change. Here's where I channel energy and effort for broader impact.
           </p>
           <div className="section-divider w-24 mx-auto mt-6" />
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 stagger-children">
+        <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 stagger-children">
           {impacts.map((item) => (
             <div
               key={item.title}

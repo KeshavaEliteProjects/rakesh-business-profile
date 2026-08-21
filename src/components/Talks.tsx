@@ -28,19 +28,19 @@ export default function Talks() {
   };
 
   return (
-    <section id="talks" className="relative py-24 lg:py-32 overflow-hidden">
+    <section id="talks" className="relative py-16 sm:py-20 lg:py-32 overflow-hidden">
       <div className="absolute inset-0 bg-navy-950" />
       <div className="absolute top-1/2 right-0 w-80 h-80 bg-cyan-500/3 rounded-full blur-[80px]" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 reveal">
+        <div className="text-center mb-10 sm:mb-14 lg:mb-16 reveal">
           <span className="inline-block text-cyan-400 text-xs font-semibold tracking-widest uppercase mb-3">
             Speaking
           </span>
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+          <h2 className="font-display text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4">
             Talks & <span className="text-gradient">Workshops</span>
           </h2>
-          <p className="text-slate-400 max-w-2xl mx-auto text-base">
+          <p className="text-slate-400 max-w-2xl mx-auto text-sm sm:text-base">
             Sharing knowledge, inspiring engineers, and building the next generation of robotics and AI professionals through talks, workshops, and training sessions.
           </p>
           <div className="section-divider w-24 mx-auto mt-6" />
@@ -66,15 +66,15 @@ export default function Talks() {
         </div>
 
         {/* CTA */}
-        <div className="mt-12 text-center reveal">
-          <div className="inline-flex flex-col sm:flex-row items-center gap-4 glass rounded-2xl px-8 py-6 border border-cyan-400/10">
+        <div className="mt-10 sm:mt-12 text-center reveal">
+          <div className="flex flex-col sm:inline-flex sm:flex-row items-center gap-4 glass rounded-2xl px-5 py-5 sm:px-8 sm:py-6 border border-cyan-400/10">
             <div className="text-center sm:text-left">
               <p className="text-white font-semibold text-sm">Invite Rakesh to Speak</p>
               <p className="text-slate-400 text-xs mt-0.5">Available for conferences, colleges, workshops & corporate events</p>
             </div>
             <button
               onClick={scrollToContact}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-400/10 border border-cyan-400/30 text-cyan-400 text-sm font-semibold hover:bg-cyan-400/20 transition-all whitespace-nowrap"
+              className="w-full sm:w-auto flex-none flex items-center justify-center gap-2 px-5 min-h-[48px] rounded-xl bg-cyan-400/10 border border-cyan-400/30 text-cyan-400 text-sm font-semibold hover:bg-cyan-400/20 active:bg-cyan-400/20 transition-all whitespace-nowrap"
             >
               Book a Session
               <ChevronRight className="w-4 h-4" />

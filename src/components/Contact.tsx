@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { Mail, Globe, Linkedin, Send, CheckCircle, AlertCircle, MapPin } from 'lucide-react';
+import { useState } from 'react';
+import { Mail, Globe, Linkedin, Send, CheckCircle, AlertCircle, MapPin, ChevronDown } from 'lucide-react';
 
 type FormData = {
   name: string;
@@ -51,11 +51,26 @@ const contactInfo = [
   },
 ];
 
+const FIELD_ORDER: (keyof FormData)[] = ['name', 'email', 'subject', 'message'];
+
+function fieldClass(hasError: boolean, extra = '') {
+  return [
+    'w-full px-4 py-3 rounded-xl bg-navy-800/60 border text-white',
+    // 16px on mobile — anything smaller makes iOS Safari zoom in on focus and
+    // leaves the user scrolled sideways on a page they can no longer read.
+    'text-base sm:text-sm',
+    'placeholder-slate-600 outline-none focus:border-cyan-400/50 focus:ring-1 focus:ring-cyan-400/20 transition-all',
+    hasError ? 'border-red-400/50' : 'border-white/10',
+    extra,
+  ]
+    .filter(Boolean)
+    .join(' ');
+}
+
 export default function Contact() {
   const [form, setForm] = useState<FormData>({ name: '', email: '', subject: '', message: '' });
   const [errors, setErrors] = useState<Errors>({});
-  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const formRef = useRef<HTMLFormElement>(null);
+  const [status, setStatus] = useState<'idle' | 'success'>('idle');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -70,9 +85,14 @@ export default function Contact() {
     const errs = validate(form);
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
+      // On a phone the invalid field is usually scrolled off screen, so send
+      // the user straight to it instead of leaving the form looking inert.
+      const firstInvalid = FIELD_ORDER.find((key) => errs[key]);
+      if (firstInvalid) {
+        document.getElementById(`contact-${firstInvalid}`)?.focus();
+      }
       return;
     }
-    // Construct mailto link
     const body = `Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`;
     window.location.href = `mailto:hello@rakeshveerapaneni.com?subject=${encodeURIComponent(form.subject)}&body=${encodeURIComponent(body)}`;
     setStatus('success');
@@ -80,29 +100,29 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="relative py-24 lg:py-32 overflow-hidden">
+    <section id="contact" className="relative py-16 sm:py-20 lg:py-32 overflow-hidden">
       <div className="absolute inset-0 bg-navy-950" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-cyan-500/4 rounded-full blur-[100px]" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 sm:w-96 sm:h-96 bg-cyan-500/4 rounded-full blur-[100px]" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 reveal">
+        <div className="text-center mb-10 sm:mb-14 lg:mb-16 reveal">
           <span className="inline-block text-cyan-400 text-xs font-semibold tracking-widest uppercase mb-3">
             Get In Touch
           </span>
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+          <h2 className="font-display text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4">
             Let's <span className="text-gradient">Connect</span>
           </h2>
-          <p className="text-slate-400 max-w-2xl mx-auto text-base">
+          <p className="text-slate-400 max-w-2xl mx-auto text-sm sm:text-base">
             Whether you're looking to collaborate, discuss a project, book a workshop, or simply connect — I'd love to hear from you.
           </p>
           <div className="section-divider w-24 mx-auto mt-6" />
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
+        <div className="grid lg:grid-cols-2 gap-10 sm:gap-12 items-start">
           {/* Left: Info */}
           <div className="reveal-left space-y-6">
             <div>
-              <h3 className="font-display font-bold text-white text-xl mb-2">Let's Work Together</h3>
+              <h3 className="font-display font-bold text-white text-lg sm:text-xl mb-2">Let's Work Together</h3>
               <p className="text-slate-400 text-sm leading-relaxed">
                 Available for collaborations with educational institutions, industries, startups, and research organizations. Open to speaking engagements, technology consulting, and partnership discussions.
               </p>
@@ -110,18 +130,18 @@ export default function Contact() {
 
             <div className="space-y-3">
               {contactInfo.map((c) => (
-                <div key={c.label} className="flex items-center gap-4 glass-card rounded-xl p-4">
+                <div key={c.label} className="flex items-center gap-3 sm:gap-4 glass-card rounded-xl p-4">
                   <div className="w-10 h-10 rounded-lg bg-cyan-400/10 flex items-center justify-center flex-none">
                     <c.icon className="w-4 h-4 text-cyan-400" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-slate-500 text-xs">{c.label}</p>
                     {c.href ? (
                       <a
                         href={c.href}
                         target={c.href.startsWith('http') ? '_blank' : undefined}
                         rel={c.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                        className="text-white text-sm font-medium hover:text-cyan-400 transition-colors"
+                        className="text-white text-sm font-medium hover:text-cyan-400 transition-colors break-words"
                       >
                         {c.value}
                       </a>
@@ -139,9 +159,9 @@ export default function Contact() {
               <p className="text-slate-400 text-xs mb-3">Send a message directly to Rakesh's inbox.</p>
               <a
                 href="mailto:hello@rakeshveerapaneni.com"
-                className="inline-flex items-center gap-2 text-cyan-400 text-sm font-semibold hover:text-cyan-300 transition-colors"
+                className="inline-flex items-center gap-2 min-h-[44px] py-2 text-cyan-400 text-sm font-semibold hover:text-cyan-300 active:text-cyan-300 transition-colors break-all"
               >
-                <Mail className="w-4 h-4" />
+                <Mail className="w-4 h-4 flex-none" />
                 hello@rakeshveerapaneni.com
               </a>
             </div>
@@ -149,100 +169,135 @@ export default function Contact() {
 
           {/* Right: Form */}
           <div className="reveal-right">
-            <div className="glass rounded-2xl p-6 sm:p-8 border border-cyan-400/10">
+            <div className="glass rounded-2xl p-5 sm:p-6 lg:p-8 border border-cyan-400/10">
               {status === 'success' ? (
                 <div className="text-center py-8">
                   <CheckCircle className="w-12 h-12 text-emerald-400 mx-auto mb-4" />
                   <h3 className="font-display font-bold text-white text-lg mb-2">Message Prepared!</h3>
-                  <p className="text-slate-400 text-sm mb-6">Your email client should open with your message. If it didn't, please email directly at hello@rakeshveerapaneni.com</p>
+                  <p className="text-slate-400 text-sm mb-6 break-words">
+                    Your email client should open with your message. If it didn't, please email directly at hello@rakeshveerapaneni.com
+                  </p>
                   <button
                     onClick={() => setStatus('idle')}
-                    className="px-5 py-2.5 rounded-xl bg-cyan-400/10 border border-cyan-400/30 text-cyan-400 text-sm font-semibold hover:bg-cyan-400/20 transition-all"
+                    className="px-5 min-h-[48px] rounded-xl bg-cyan-400/10 border border-cyan-400/30 text-cyan-400 text-sm font-semibold hover:bg-cyan-400/20 active:bg-cyan-400/20 transition-all"
                   >
                     Send Another Message
                   </button>
                 </div>
               ) : (
-                <form ref={formRef} onSubmit={handleSubmit} noValidate className="space-y-4">
+                <form onSubmit={handleSubmit} noValidate className="space-y-4">
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-slate-400 text-xs mb-1.5">Your Name *</label>
+                      <label htmlFor="contact-name" className="block text-slate-400 text-xs mb-1.5">
+                        Your Name *
+                      </label>
                       <input
+                        id="contact-name"
                         type="text"
                         name="name"
                         value={form.name}
                         onChange={handleChange}
                         placeholder="Full name"
-                        className={`w-full px-4 py-3 rounded-xl bg-navy-800/60 border text-white text-sm placeholder-slate-600 outline-none focus:border-cyan-400/50 focus:ring-1 focus:ring-cyan-400/20 transition-all ${errors.name ? 'border-red-400/50' : 'border-white/10'}`}
+                        autoComplete="name"
+                        enterKeyHint="next"
+                        aria-invalid={!!errors.name}
+                        aria-describedby={errors.name ? 'contact-name-error' : undefined}
+                        className={fieldClass(!!errors.name)}
                       />
                       {errors.name && (
-                        <p className="flex items-center gap-1 text-red-400 text-xs mt-1">
-                          <AlertCircle className="w-3 h-3" /> {errors.name}
+                        <p id="contact-name-error" role="alert" className="flex items-center gap-1 text-red-400 text-xs mt-1">
+                          <AlertCircle className="w-3 h-3 flex-none" /> {errors.name}
                         </p>
                       )}
                     </div>
                     <div>
-                      <label className="block text-slate-400 text-xs mb-1.5">Email Address *</label>
+                      <label htmlFor="contact-email" className="block text-slate-400 text-xs mb-1.5">
+                        Email Address *
+                      </label>
                       <input
+                        id="contact-email"
                         type="email"
                         name="email"
                         value={form.email}
                         onChange={handleChange}
                         placeholder="your@email.com"
-                        className={`w-full px-4 py-3 rounded-xl bg-navy-800/60 border text-white text-sm placeholder-slate-600 outline-none focus:border-cyan-400/50 focus:ring-1 focus:ring-cyan-400/20 transition-all ${errors.email ? 'border-red-400/50' : 'border-white/10'}`}
+                        autoComplete="email"
+                        inputMode="email"
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        spellCheck={false}
+                        enterKeyHint="next"
+                        aria-invalid={!!errors.email}
+                        aria-describedby={errors.email ? 'contact-email-error' : undefined}
+                        className={fieldClass(!!errors.email)}
                       />
                       {errors.email && (
-                        <p className="flex items-center gap-1 text-red-400 text-xs mt-1">
-                          <AlertCircle className="w-3 h-3" /> {errors.email}
+                        <p id="contact-email-error" role="alert" className="flex items-center gap-1 text-red-400 text-xs mt-1">
+                          <AlertCircle className="w-3 h-3 flex-none" /> {errors.email}
                         </p>
                       )}
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-slate-400 text-xs mb-1.5">Subject *</label>
-                    <select
-                      name="subject"
-                      value={form.subject}
-                      onChange={handleChange}
-                      className={`w-full px-4 py-3 rounded-xl bg-navy-800/60 border text-white text-sm outline-none focus:border-cyan-400/50 focus:ring-1 focus:ring-cyan-400/20 transition-all ${errors.subject ? 'border-red-400/50' : 'border-white/10'} appearance-none`}
-                    >
-                      <option value="" className="bg-navy-900">Select a topic…</option>
-                      <option value="Collaboration Opportunity" className="bg-navy-900">Collaboration Opportunity</option>
-                      <option value="Speaking / Workshop Request" className="bg-navy-900">Speaking / Workshop Request</option>
-                      <option value="Technology Consulting" className="bg-navy-900">Technology Consulting</option>
-                      <option value="Partnership" className="bg-navy-900">Partnership</option>
-                      <option value="STEM Program Inquiry" className="bg-navy-900">STEM Program Inquiry</option>
-                      <option value="Investment / Funding" className="bg-navy-900">Investment / Funding</option>
-                      <option value="General Inquiry" className="bg-navy-900">General Inquiry</option>
-                    </select>
+                    <label htmlFor="contact-subject" className="block text-slate-400 text-xs mb-1.5">
+                      Subject *
+                    </label>
+                    {/* appearance-none strips the native arrow, so one is drawn back in. */}
+                    <div className="relative">
+                      <select
+                        id="contact-subject"
+                        name="subject"
+                        value={form.subject}
+                        onChange={handleChange}
+                        aria-invalid={!!errors.subject}
+                        aria-describedby={errors.subject ? 'contact-subject-error' : undefined}
+                        className={fieldClass(!!errors.subject, 'appearance-none pr-10')}
+                      >
+                        <option value="" className="bg-navy-900">Select a topic…</option>
+                        <option value="Collaboration Opportunity" className="bg-navy-900">Collaboration Opportunity</option>
+                        <option value="Speaking / Workshop Request" className="bg-navy-900">Speaking / Workshop Request</option>
+                        <option value="Technology Consulting" className="bg-navy-900">Technology Consulting</option>
+                        <option value="Partnership" className="bg-navy-900">Partnership</option>
+                        <option value="STEM Program Inquiry" className="bg-navy-900">STEM Program Inquiry</option>
+                        <option value="Investment / Funding" className="bg-navy-900">Investment / Funding</option>
+                        <option value="General Inquiry" className="bg-navy-900">General Inquiry</option>
+                      </select>
+                      <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                    </div>
                     {errors.subject && (
-                      <p className="flex items-center gap-1 text-red-400 text-xs mt-1">
-                        <AlertCircle className="w-3 h-3" /> {errors.subject}
+                      <p id="contact-subject-error" role="alert" className="flex items-center gap-1 text-red-400 text-xs mt-1">
+                        <AlertCircle className="w-3 h-3 flex-none" /> {errors.subject}
                       </p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-slate-400 text-xs mb-1.5">Message *</label>
+                    <label htmlFor="contact-message" className="block text-slate-400 text-xs mb-1.5">
+                      Message *
+                    </label>
                     <textarea
+                      id="contact-message"
                       name="message"
                       value={form.message}
                       onChange={handleChange}
                       rows={5}
                       placeholder="Tell me about your project, collaboration idea, or question…"
-                      className={`w-full px-4 py-3 rounded-xl bg-navy-800/60 border text-white text-sm placeholder-slate-600 outline-none focus:border-cyan-400/50 focus:ring-1 focus:ring-cyan-400/20 transition-all resize-none ${errors.message ? 'border-red-400/50' : 'border-white/10'}`}
+                      enterKeyHint="enter"
+                      aria-invalid={!!errors.message}
+                      aria-describedby={errors.message ? 'contact-message-error' : undefined}
+                      className={fieldClass(!!errors.message, 'resize-y min-h-[120px]')}
                     />
                     {errors.message && (
-                      <p className="flex items-center gap-1 text-red-400 text-xs mt-1">
-                        <AlertCircle className="w-3 h-3" /> {errors.message}
+                      <p id="contact-message-error" role="alert" className="flex items-center gap-1 text-red-400 text-xs mt-1">
+                        <AlertCircle className="w-3 h-3 flex-none" /> {errors.message}
                       </p>
                     )}
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-cyan-400 text-navy-950 font-bold text-sm tracking-wide hover:bg-cyan-300 transition-all duration-200 shadow-lg shadow-cyan-400/15 hover:shadow-cyan-400/30"
+                    className="w-full flex items-center justify-center gap-2 px-6 min-h-[52px] rounded-xl bg-cyan-400 text-navy-950 font-bold text-sm tracking-wide hover:bg-cyan-300 active:bg-cyan-300 transition-all duration-200 shadow-lg shadow-cyan-400/15 hover:shadow-cyan-400/30"
                   >
                     <Send className="w-4 h-4" />
                     Send Message

@@ -59,20 +59,20 @@ const achievements = [
 
 export default function Achievements() {
   return (
-    <section id="achievements" className="relative py-24 lg:py-32 overflow-hidden">
+    <section id="achievements" className="relative py-16 sm:py-20 lg:py-32 overflow-hidden">
       <div className="absolute inset-0 bg-navy-900/60" />
       <div className="absolute inset-0 bg-grid-pattern bg-[size:40px_40px] opacity-20" />
       <div className="absolute top-1/3 left-0 w-64 h-64 bg-cyan-500/4 rounded-full blur-[80px]" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 reveal">
+        <div className="text-center mb-10 sm:mb-14 lg:mb-16 reveal">
           <span className="inline-block text-cyan-400 text-xs font-semibold tracking-widest uppercase mb-3">
             Milestones
           </span>
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+          <h2 className="font-display text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4">
             Key <span className="text-gradient">Achievements</span>
           </h2>
-          <p className="text-slate-400 max-w-2xl mx-auto text-base">
+          <p className="text-slate-400 max-w-2xl mx-auto text-sm sm:text-base">
             Building from the ground up — milestones that mark the journey from engineering passion to entrepreneurial execution.
           </p>
           <div className="section-divider w-24 mx-auto mt-6" />
@@ -82,14 +82,14 @@ export default function Achievements() {
           {achievements.map((a) => (
             <div
               key={a.title}
-              className={`glass-card rounded-2xl p-6 border ${a.accent} group`}
+              className={`glass-card rounded-2xl p-5 sm:p-6 border ${a.accent} group`}
             >
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-3 sm:gap-4">
                 <div className={`w-11 h-11 rounded-xl ${a.iconBg} flex items-center justify-center flex-none group-hover:scale-110 transition-transform`}>
                   <a.icon className={`w-5 h-5 ${a.iconColor}`} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2 mb-1">
+                  <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 mb-1">
                     <h3 className="font-display font-bold text-white text-sm leading-tight">{a.title}</h3>
                     <span className={`flex-none px-2 py-0.5 rounded-full glass-light text-xs font-semibold ${a.iconColor} border border-white/5`}>
                       {a.year}

@@ -50,28 +50,28 @@ const areaColor: Record<string, string> = {
 
 export default function Publications() {
   return (
-    <section id="publications" className="relative py-24 lg:py-32 overflow-hidden">
+    <section id="publications" className="relative py-16 sm:py-20 lg:py-32 overflow-hidden">
       <div className="absolute inset-0 bg-navy-900/60" />
       <div className="absolute inset-0 bg-grid-pattern bg-[size:40px_40px] opacity-20" />
       <div className="absolute bottom-0 right-0 w-80 h-80 bg-cyan-500/3 rounded-full blur-[80px]" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 reveal">
+        <div className="text-center mb-10 sm:mb-14 lg:mb-16 reveal">
           <span className="inline-block text-cyan-400 text-xs font-semibold tracking-widest uppercase mb-3">
             Writing
           </span>
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+          <h2 className="font-display text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4">
             Publications & <span className="text-gradient">Articles</span>
           </h2>
-          <p className="text-slate-400 max-w-2xl mx-auto text-base">
+          <p className="text-slate-400 max-w-2xl mx-auto text-sm sm:text-base">
             Sharing insights and perspectives on robotics, AI, engineering education, and technology trends.
           </p>
           <div className="section-divider w-24 mx-auto mt-6" />
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 stagger-children">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 stagger-children">
           {publications.map((pub) => (
-            <div key={pub.title} className="glass-card rounded-2xl p-6 group flex flex-col">
+            <div key={pub.title} className="glass-card rounded-2xl p-5 sm:p-6 group flex flex-col">
               <div className="flex items-start justify-between gap-3 mb-4">
                 <div className="w-9 h-9 rounded-lg bg-cyan-400/10 flex items-center justify-center flex-none group-hover:bg-cyan-400/20 transition-colors">
                   <FileText className="w-4 h-4 text-cyan-400" />
@@ -90,7 +90,7 @@ export default function Publications() {
         </div>
 
         {/* Note */}
-        <div className="mt-10 text-center reveal">
+        <div className="mt-8 sm:mt-10 text-center reveal">
           <div className="inline-flex items-center gap-2 text-slate-500 text-xs">
             <BookOpen className="w-3.5 h-3.5" />
             <span>Publication topics from source content. Reach out via contact for full articles and insights.</span>

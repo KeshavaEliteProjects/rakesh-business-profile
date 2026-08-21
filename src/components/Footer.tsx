@@ -32,8 +32,8 @@ export default function Footer() {
     <footer className="relative bg-navy-950 border-t border-white/5">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid md:grid-cols-3 gap-12 mb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 pb-safe">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-10 lg:gap-12 mb-10 sm:mb-12">
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-4">
@@ -55,7 +55,7 @@ export default function Footer() {
                   target={s.href.startsWith('http') ? '_blank' : undefined}
                   rel={s.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                   aria-label={s.label}
-                  className="w-8 h-8 rounded-lg glass-light border border-white/5 flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:border-cyan-400/30 transition-all"
+                  className="w-10 h-10 rounded-lg glass-light border border-white/5 flex items-center justify-center text-slate-400 hover:text-cyan-400 active:text-cyan-400 hover:border-cyan-400/30 transition-all"
                 >
                   <s.icon className="w-4 h-4" />
                 </a>
@@ -71,7 +71,7 @@ export default function Footer() {
                 <button
                   key={link.href}
                   onClick={() => handleNavClick(link.href)}
-                  className="text-left text-slate-500 text-xs hover:text-cyan-400 transition-colors py-1"
+                  className="text-left text-slate-500 text-xs hover:text-cyan-400 active:text-cyan-400 transition-colors py-2 min-h-[36px] flex items-center"
                 >
                   {link.label}
                 </button>
@@ -85,18 +85,18 @@ export default function Footer() {
             <div className="space-y-2">
               <a
                 href="mailto:hello@rakeshveerapaneni.com"
-                className="flex items-center gap-2 text-slate-500 text-xs hover:text-cyan-400 transition-colors"
+                className="flex items-center gap-2 text-slate-500 text-xs hover:text-cyan-400 active:text-cyan-400 transition-colors py-2 min-h-[44px] break-all"
               >
-                <Mail className="w-3.5 h-3.5 text-cyan-400/50" />
+                <Mail className="w-3.5 h-3.5 text-cyan-400/50 flex-none" />
                 hello@rakeshveerapaneni.com
               </a>
               <a
                 href="https://www.rakeshveerapaneni.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-slate-500 text-xs hover:text-cyan-400 transition-colors"
+                className="flex items-center gap-2 text-slate-500 text-xs hover:text-cyan-400 active:text-cyan-400 transition-colors py-2 min-h-[44px] break-all"
               >
-                <Globe className="w-3.5 h-3.5 text-cyan-400/50" />
+                <Globe className="w-3.5 h-3.5 text-cyan-400/50 flex-none" />
                 www.rakeshveerapaneni.com
               </a>
             </div>
@@ -104,9 +104,9 @@ export default function Footer() {
         </div>
 
         {/* Quote */}
-        <div className="border-t border-white/5 pt-8 mb-8">
+        <div className="border-t border-white/5 pt-6 sm:pt-8 mb-6 sm:mb-8">
           <blockquote className="text-center">
-            <p className="text-slate-400 text-sm italic">
+            <p className="text-slate-400 text-xs sm:text-sm italic">
               "Innovation begins with curiosity, grows through experimentation, and creates impact through execution."
             </p>
             <footer className="text-slate-600 text-xs mt-2">— Rakesh Veerapaneni</footer>
@@ -114,7 +114,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
           <p className="text-slate-600 text-xs text-center sm:text-left">
             © {new Date().getFullYear()} Rakesh Veerapaneni. All rights reserved. |{' '}
             <a
@@ -128,7 +128,7 @@ export default function Footer() {
           </p>
           <button
             onClick={scrollToTop}
-            className="flex items-center gap-2 text-slate-600 text-xs hover:text-cyan-400 transition-colors group"
+            className="flex items-center gap-2 text-slate-600 text-xs hover:text-cyan-400 active:text-cyan-400 transition-colors group min-h-[44px] px-2 flex-none"
             aria-label="Back to top"
           >
             Back to top

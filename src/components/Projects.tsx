@@ -1,5 +1,12 @@
-import { useState } from 'react';
-import { X, ExternalLink, Tag } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { X, Tag } from 'lucide-react';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+
+/** Pexels serves a resized file per `w` param — ask for one that matches the
+ *  slot instead of shipping the same 600px file to every breakpoint. */
+function pexels(url: string, width: number) {
+  return `${url.replace(/&w=\d+/, '')}&w=${width}`;
+}
 
 type Project = {
   id: number;
@@ -159,38 +166,86 @@ export default function Projects() {
   const [activeFilter, setActiveFilter] = useState('All');
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  // The card that opened the modal, so focus can go back where it came from.
+  const lastTrigger = useRef<HTMLElement | null>(null);
+
+  const isOpen = selectedProject !== null;
+  useBodyScrollLock(isOpen);
+
+  const close = useCallback(() => setSelectedProject(null), []);
+
+  useEffect(() => {
+    if (!isOpen) {
+      lastTrigger.current?.focus();
+      lastTrigger.current = null;
+      return;
+    }
+
+    closeButtonRef.current?.focus();
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        close();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+
+      // Keep tabbing inside the dialog while it is open.
+      const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
+        'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusable || focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [isOpen, close]);
+
   const filtered = activeFilter === 'All' ? projects : projects.filter((p) => p.category === activeFilter);
 
   return (
-    <section id="projects" className="relative py-24 lg:py-32 overflow-hidden">
+    <section id="projects" className="relative py-16 sm:py-20 lg:py-32 overflow-hidden">
       <div className="absolute inset-0 bg-navy-900/60" />
-      <div className="absolute inset-0 bg-grid-pattern bg-[size:40px_40px] opacity-20" />
-      <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/3 rounded-full blur-[100px]" />
+      <div className="absolute inset-0 bg-grid-pattern bg-[size:28px_28px] sm:bg-[size:40px_40px] opacity-20" />
+      <div className="absolute top-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-cyan-500/3 rounded-full blur-[100px]" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12 reveal">
+        <div className="text-center mb-8 sm:mb-10 lg:mb-12 reveal">
           <span className="inline-block text-cyan-400 text-xs font-semibold tracking-widest uppercase mb-3">
             Portfolio
           </span>
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+          <h2 className="font-display text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4">
             Featured <span className="text-gradient">Projects</span>
           </h2>
-          <p className="text-slate-400 max-w-2xl mx-auto text-base">
+          <p className="text-slate-400 max-w-2xl mx-auto text-sm sm:text-base">
             From autonomous robots to AI-powered applications — a showcase of work spanning robotics, computer vision, embedded systems, and software products.
           </p>
           <div className="section-divider w-24 mx-auto mt-6" />
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap justify-center gap-2 mb-10 reveal">
+        <div className="flex flex-wrap justify-center gap-2 mb-8 sm:mb-10 reveal">
           {FILTERS.map((f) => (
             <button
               key={f}
               onClick={() => setActiveFilter(f)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              aria-pressed={activeFilter === f}
+              className={`px-4 min-h-[44px] rounded-lg text-sm font-medium transition-all duration-200 ${
                 activeFilter === f
                   ? 'bg-cyan-400 text-navy-950 shadow-lg shadow-cyan-400/20'
-                  : 'glass-light text-slate-400 hover:text-white border border-white/5 hover:border-cyan-400/20'
+                  : 'glass-light text-slate-400 hover:text-white active:text-white border border-white/5 hover:border-cyan-400/20'
               }`}
             >
               {f}
@@ -199,17 +254,28 @@ export default function Projects() {
         </div>
 
         {/* Projects grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {filtered.map((project) => (
-            <div
+            <button
               key={project.id}
-              className="glass-card rounded-2xl overflow-hidden group cursor-pointer"
-              onClick={() => setSelectedProject(project)}
+              type="button"
+              onClick={(e) => {
+                lastTrigger.current = e.currentTarget;
+                setSelectedProject(project);
+              }}
+              aria-haspopup="dialog"
+              className="glass-card rounded-2xl overflow-hidden group cursor-pointer text-left w-full"
             >
-              <div className="relative h-44 overflow-hidden">
+              <div className="relative h-40 sm:h-44 overflow-hidden">
                 <img
-                  src={project.image}
-                  alt={project.title}
+                  src={pexels(project.image, 600)}
+                  srcSet={`${pexels(project.image, 400)} 400w, ${pexels(project.image, 600)} 600w, ${pexels(project.image, 900)} 900w`}
+                  sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                  alt=""
+                  width={600}
+                  height={400}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/40 to-transparent" />
@@ -218,7 +284,7 @@ export default function Projects() {
                 </span>
               </div>
 
-              <div className="p-5">
+              <div className="p-4 sm:p-5">
                 <h3 className="font-display font-bold text-white text-base mb-2 group-hover:text-cyan-400 transition-colors">
                   {project.title}
                 </h3>
@@ -234,7 +300,7 @@ export default function Projects() {
                   )}
                 </div>
               </div>
-            </div>
+            </button>
           ))}
         </div>
       </div>
@@ -242,34 +308,47 @@ export default function Projects() {
       {/* Modal */}
       {selectedProject && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          onClick={() => setSelectedProject(null)}
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+          onClick={close}
         >
           <div className="absolute inset-0 bg-navy-950/90 backdrop-blur-sm" />
           <div
-            className="relative max-w-2xl w-full glass rounded-2xl border border-cyan-400/15 overflow-hidden max-h-[90vh] overflow-y-auto"
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="project-modal-title"
+            className="relative w-full sm:max-w-2xl glass rounded-t-2xl sm:rounded-2xl border border-cyan-400/15 overflow-hidden max-h-[92dvh] sm:max-h-[90dvh] overflow-y-auto overscroll-contain"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative h-56 overflow-hidden">
+            <div className="relative h-40 sm:h-56 overflow-hidden">
               <img
-                src={selectedProject.image}
-                alt={selectedProject.title}
+                src={pexels(selectedProject.image, 900)}
+                srcSet={`${pexels(selectedProject.image, 600)} 600w, ${pexels(selectedProject.image, 900)} 900w`}
+                sizes="(max-width: 639px) 100vw, 672px"
+                alt=""
+                width={900}
+                height={600}
+                decoding="async"
                 className="w-full h-full object-cover opacity-60"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-navy-900/50 to-transparent" />
               <button
-                onClick={() => setSelectedProject(null)}
-                className="absolute top-4 right-4 w-8 h-8 rounded-lg bg-navy-950/80 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors"
+                ref={closeButtonRef}
+                onClick={close}
+                className="absolute top-3 right-3 w-11 h-11 rounded-lg bg-navy-950/80 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white active:text-white transition-colors"
+                aria-label="Close project details"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
               <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-cyan-400/10 border border-cyan-400/30 text-cyan-400 text-xs font-semibold">
                 {selectedProject.category}
               </span>
             </div>
 
-            <div className="p-6 sm:p-8">
-              <h3 className="font-display font-bold text-white text-xl sm:text-2xl mb-3">{selectedProject.title}</h3>
+            <div className="p-5 sm:p-8 pb-safe sm:pb-8">
+              <h3 id="project-modal-title" className="font-display font-bold text-white text-lg sm:text-2xl mb-3">
+                {selectedProject.title}
+              </h3>
               <p className="text-slate-300 text-sm leading-relaxed mb-6">{selectedProject.details}</p>
 
               <div>
